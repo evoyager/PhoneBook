@@ -1,7 +1,9 @@
 package com.voyager.phonebook.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -11,6 +13,8 @@ import java.util.Set;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "user")
 public class User {
@@ -31,11 +35,11 @@ public class User {
     private String password;
 
     @Column(name = "name")
-    @Email(message = "*Please provide your name")
+    @NotEmpty(message = "*Please provide your name")
     private String name;
 
     @Column(name = "last_name")
-    @Email(message = "*Please provide your last name")
+    @NotEmpty(message = "*Please provide your last name")
     private String lastName;
 
     @Column(name = "active")
