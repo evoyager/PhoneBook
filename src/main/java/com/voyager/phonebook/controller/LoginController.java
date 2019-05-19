@@ -1,6 +1,8 @@
 package com.voyager.phonebook.controller;
 
+import com.voyager.phonebook.model.Contact;
 import com.voyager.phonebook.model.User;
+import com.voyager.phonebook.service.ContactService;
 import com.voyager.phonebook.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -18,6 +20,9 @@ public class LoginController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ContactService contactService;
 
     @RequestMapping(value = {"/", "/login"}, method = RequestMethod.GET)
     public ModelAndView login() {
@@ -38,12 +43,12 @@ public class LoginController {
     @RequestMapping(value="/registration", method = RequestMethod.POST)
     public ModelAndView createNewUser(@Valid User user, BindingResult bindingResult) {
         ModelAndView modelAndView = new ModelAndView();
-        User userExists = userService.findUserByEmail(user.getEmail());
+        User userExists = userService.findUserByLogin(user.getLogin());
 
         if (userExists != null) {
             bindingResult
-                    .rejectValue("email", "error.user",
-                            "There is already a user registered with the email provided");
+                    .rejectValue("login", "error.user",
+                            "There is already a user registered with the login provided");
         }
         if (bindingResult.hasErrors()) {
             modelAndView.setViewName("registration");
@@ -61,10 +66,30 @@ public class LoginController {
     public ModelAndView home() {
         ModelAndView modelAndView = new ModelAndView();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findUserByEmail(auth.getName());
-        modelAndView.addObject("userName", "Welcome " + user.getName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
+        User user = userService.findUserByLogin(auth.getName());
+        modelAndView.addObject("userName", "Welcome " + user.getName() + " " + user.getLastName() + " " + user.getMiddleName() + " (" + user.getLogin() + ")");
         modelAndView.addObject("adminMessage", "Content Available Only for Users with Admin Role");
         modelAndView.setViewName("admin/home");
+        return modelAndView;
+    }
+
+    @RequestMapping(value="/admin/createNewContact", method = RequestMethod.POST)
+    public ModelAndView createNewContact(@Valid Contact contact, BindingResult bindingResult) {
+        ModelAndView modelAndView = new ModelAndView();
+        Contact contactExists = contactService.findContactByEmail(contact.getEmail());
+        if (contactExists != null) {
+            bindingResult
+                .rejectValue("email", "error.contact",
+                    "There is already a contact in phone book with the email provided");
+        }
+        if (bindingResult.hasErrors()) {
+            modelAndView.setViewName("admin/createNewContact");
+        } else {
+            contactService.saveContact(contact);
+            modelAndView.addObject("successMessage", "Contact has been added to phone book successfully");
+            modelAndView.addObject("contact", new Contact());
+            modelAndView.setViewName("admin/createNewContact");
+    }
         return modelAndView;
     }
 

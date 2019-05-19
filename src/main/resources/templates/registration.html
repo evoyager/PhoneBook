@@ -37,14 +37,25 @@
                                placeholder="Last Name" class="form-control" />
                     </div>
                 </div>
+
                 <div class="form-group">
                     <div class="col-sm-9">
-                        <input type="text" th:field="*{email}" placeholder="Email"
+                        <label	th:if="${#fields.hasErrors('middleName')}" th:errors="*{middleName}"
+                                  class="validation-message"></label>
+                        <input type="text" th:field="*{middleName}"
+                               placeholder="Middle Name" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-9">
+                        <input type="text" th:field="*{login}" placeholder="Login"
                                class="form-control" /> <label
-                            th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
+                            th:if="${#fields.hasErrors('login')}" th:errors="*{login}"
                             class="validation-message"></label>
                     </div>
                 </div>
+
                 <div class="form-group">
                     <div class="col-sm-9">
                         <input type="password" th:field="*{password}"

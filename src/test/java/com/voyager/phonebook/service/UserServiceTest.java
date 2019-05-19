@@ -36,12 +36,12 @@ public class UserServiceTest {
                 .id(1)
                 .name("Ievgen")
                 .lastName("Gusar")
-                .email("test@test.com")
+                .login("voyager")
                 .build();
 
         Mockito.when(mockUserRepository.save(any()))
             .thenReturn(user);
-        Mockito.when(mockUserRepository.findByEmail(anyString()))
+        Mockito.when(mockUserRepository.findByLogin(anyString()))
             .thenReturn(user);
     }
 
@@ -49,9 +49,9 @@ public class UserServiceTest {
     public void testFindUserByEmail() {
         final String email = "test@test.com";
 
-        final User result = userServiceUnderTest.findUserByEmail(email);
+        final User result = userServiceUnderTest.findUserByLogin(email);
 
-        assertEquals(email, result.getEmail());
+        assertEquals(email, result.getLogin());
     }
 
     @Test
@@ -60,6 +60,6 @@ public class UserServiceTest {
 
         User result = userServiceUnderTest.saveUser(User.builder().build());
 
-        assertEquals(email, result.getEmail());
+        assertEquals(email, result.getLogin());
     }
 }
